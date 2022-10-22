@@ -85,32 +85,17 @@ exports.createOrder = functions.https.onRequest(async function (
 ) {
   const body = request.body;
   try {
-    // validate checkout
-    if (
-      body.checkoutId === null ||
-      body.checkoutId === undefined ||
-      body.checkoutId === ""
-    ) {
-      throw Error("No CheckoutId");
-    }
-    // 1. fetch order
-    // API CALL fetch order
-    var lineItems = [];
-    lineItems = createLineItemsFromCheckoutLineItems();
-
-    // 2. check pricing
-
     // 3. create payload for order
-    var orderPayload = {};
+    // var orderPayload = {};
     if (body.pickUp) {
-      orderPayload = createOrderPayLoadForPickUp(lineItems);
+      orderPayload = createOrderPayLoadForPickUp(body.lineItems);
     } else {
-      orderPayload = createOrderPayLoadForHomeDilevery(userInfo, lineItems);
+      orderPayload = createOrderPayLoadForHomeDilevery(body.userInfo, body.lineItems);
     }
 
     // 4.  create order
     await createOrderAPI(orderPayload);
-    response.status(200).json({ payload: "Order Placed" });
+    // response.status(200).json({ payload: "Order Placed" });
   } catch (error) {
     response.status(401).json({ payload: error });
   }
