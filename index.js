@@ -11,7 +11,7 @@ const {
 } = require("./utils");
 const { createOrderAPI } = require("./api");
 let finalArrayToSendToAlgolia = [];
-const client = algoliasearch("PJWBTAEX15", "744aa2803cfd895616bf203cd282157b");
+const client = algoliasearch("", "");
 const index = client.initIndex("ShopifyProduct");
 
 // exports.helloWorld = functions.https.onRequest((request, response) => {
@@ -94,8 +94,8 @@ exports.createOrder = functions.https.onRequest(async function (
     }
 
     // 4.  create order
-    await createOrderAPI(orderPayload);
-    // response.status(200).json({ payload: "Order Placed" });
+  const data = await createOrderAPI(orderPayload);
+    response.status(200).json({ payload: "Order Placed",data });
   } catch (error) {
     response.status(401).json({ payload: error });
   }
