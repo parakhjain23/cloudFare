@@ -96,14 +96,14 @@ exports.createOrder = functions.https.onRequest(async function (
       orderPayload = createOrderPayLoadForPickUp(body.lineItems);
     } else {
       orderPayload = createOrderPayLoadForHomeDilevery(
-        body.userInfo,
-        body.lineItems
+        body.body.userInfo,
+        body.body.lineItems
       );
     }
 
     // 4.  create order
-    const data = await createOrderAPI(orderPayload);
-    response.status(200).json({ payload: "Order Placed", data });
+  const data = const data = await createOrderAPI(orderPayload);
+    response.status(200).json({ payload: "Order Placed", data,data });
   } catch (error) {
     response.status(401).json({ payload: error });
   }
