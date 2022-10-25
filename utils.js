@@ -1,4 +1,4 @@
-export const createOrderPayLoadForPickUp = (lineItems) => {
+const createOrderPayLoadForPickUp = (lineItems) => {
   return {
     order: {
       line_items: lineItems,
@@ -7,7 +7,7 @@ export const createOrderPayLoadForPickUp = (lineItems) => {
   };
 };
 
-export const createOrderPayLoadForHomeDilevery = (userInfo, lineItems) => {
+const createOrderPayLoadForHomeDilevery = (userInfo, lineItems) => {
   return {
     order: {
       line_items: lineItems,
@@ -44,4 +44,10 @@ export const createOrderPayLoadForHomeDilevery = (userInfo, lineItems) => {
   };
 };
 
-export const createLineItemsFromCheckoutLineItems = () => {};
+const createLineItemsFromCheckoutLineItems = () => {};
+
+module.exports = {
+  createLineItemsFromCheckoutLineItems,
+  createOrderPayLoadForHomeDilevery,
+  createOrderPayLoadForPickUp,
+};

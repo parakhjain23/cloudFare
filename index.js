@@ -2,6 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
+require("dotenv").config();
 const algoliasearch = require("algoliasearch");
 const axios = require("axios");
 const {
@@ -9,9 +10,13 @@ const {
   createOrderPayLoadForHomeDilevery,
   createLineItemsFromCheckoutLineItems,
 } = require("./utils");
+
 const { createOrderAPI } = require("./api");
 let finalArrayToSendToAlgolia = [];
-const client = algoliasearch("PJWBTAEX15", "744aa2803cfd895616bf203cd282157b");
+const client = algoliasearch(
+  process.env.APPLICATION_ID,
+  process.env.WRITE_API_KEY
+);
 const index = client.initIndex("ShopifyProduct");
 
 // exports.helloWorld = functions.https.onRequest((request, response) => {
@@ -85,32 +90,20 @@ exports.createOrder = functions.https.onRequest(async function (
 ) {
   const body = request.body;
   try {
-    // validate checkout
-    if (
-      body.checkoutId === null ||
-      body.checkoutId === undefined ||
-      body.checkoutId === ""
-    ) {
-      throw Error("No CheckoutId");
-    }
-    // 1. fetch order
-    // API CALL fetch order
-    var lineItems = [];
-    lineItems = createLineItemsFromCheckoutLineItems();
-
-    // 2. check pricing
-
     // 3. create payload for order
-    var orderPayload = {};
+    // var orderPayload = {};
     if (body.pickUp) {
-      orderPayload = createOrderPayLoadForPickUp(lineItems);
+      orderPayload = createOrderPayLoadForPickUp(body.lineItems);
     } else {
-      orderPayload = createOrderPayLoadForHomeDilevery(userInfo, lineItems);
+      orderPayload = createOrderPayLoadForHomeDilevery(
+        body.userInfo,
+        body.lineItems
+      );
     }
 
     // 4.  create order
-    await createOrderAPI(orderPayload);
-    response.status(200).json({ payload: "Order Placed" });
+    const data = await createOrderAPI(orderPayload);
+    response.status(200).json({ payload: "Order Placed", data });
   } catch (error) {
     response.status(401).json({ payload: error });
   }
